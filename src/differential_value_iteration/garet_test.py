@@ -24,6 +24,7 @@ class GaretTest(parameterized.TestCase):
         num_actions=num_actions,
         branching_factor=branching_factor,
     )
+
     self.assertTrue(mdp is not None)
 
 
