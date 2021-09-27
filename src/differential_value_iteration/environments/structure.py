@@ -1,6 +1,7 @@
 import dataclasses
 
 import numpy as np
+import quantecon
 
 _TRANSITION_SUM_TOLERANCE = 1e-5
 
@@ -44,6 +45,10 @@ class MarkovRewardProcess:
   @property
   def num_states(self):
     return len(self.transitions)
+
+  def as_markov_chain(self):
+    """Returns transitions as a quantecon Markov Chain."""
+    return quantecon.markov.MarkovChain(self.transitions)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -97,3 +102,9 @@ class MarkovDecisionProcess:
   @property
   def num_actions(self):
     return len(self.transitions)
+
+  def as_markov_chain(self, policy: np.ndarray):
+    """Returns Markov Chain implied by transition matrix and policy."""
+    state_range = np.arange(0, self.num_states)
+    policy_transitions = self.transitions[policy, state_range]
+    return quantecon.markov.MarkovChain(policy_transitions)
