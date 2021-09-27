@@ -13,6 +13,20 @@ from differential_value_iteration.environments import structure
 
 _GARET1, _GARET2, _GARET3 = garet.GARET1, garet.GARET2, garet.GARET3
 
+# Brute force
+def calc_stationary_distribution(transitions):
+  # Subtract eye from transitions
+  transitions_minus_I = transitions - np.eye(len(transitions))
+  bottom_row = np.ones(len(transitions), dtype=transitions.dtype)
+  augmented_transitions = np.vstack((transitions_minus_I, bottom_row))
+  solution = np.zeros(len(transitions)+1, dtype=transitions.dtype)
+  solution[-1] = 1.
+
+  print('augmented transitions: ',augmented_transitions)
+  print('solution:', solution)
+  return np.linalg.solve(
+      augmented_transitions.T.dot(augmented_transitions),
+      augmented_transitions.T.dot(solution))
 
 class DVIEvaluationTest(parameterized.TestCase):
 
@@ -32,6 +46,8 @@ class DVIEvaluationTest(parameterized.TestCase):
       changes = algorithm.update()
 
     print(f'converged to: {algorithm.get_estimates()}')
+    stationary_dist = calc_stationary_distribution(environment.transitions)
+    print(f'stationary_dist is:', stationary_dist)
     with self.subTest('did_not_diverge'):
       self.assertFalse(algorithm.diverged())
     with self.subTest('maintained_types'):
