@@ -1,17 +1,14 @@
 """Tests some basic structure.py functionality."""
 from typing import Sequence
 
+import numpy as np
 from absl.testing import absltest
 from absl.testing import parameterized
-
 from differential_value_iteration.environments import garet
 from differential_value_iteration.environments import micro
-from differential_value_iteration.environments import structure
-
-import numpy as np
 
 _MRPS = (micro.create_mrp1, micro.create_mrp2, micro.create_mrp3)
-_MDPS = (micro.create_mdp1, micro.create_mdp2, garet.GARET1, garet.GARET2, garet.GARET3)
+_MDPS = (micro.create_mdp1, micro.create_mdp2, micro.create_mdp3, garet.GARET1, garet.GARET2, garet.GARET3)
 
 
 class StructureTest(parameterized.TestCase):
@@ -42,9 +39,19 @@ class StructureTest(parameterized.TestCase):
       (micro.create_mdp1, (0, 0), 2),
       (micro.create_mdp1, (0, 1), 2),
       (micro.create_mdp1, (1, 0), 2),
+      (micro.create_mdp1, (1, 1), 1),
       (micro.create_mdp2, (0, 0), 2),
       (micro.create_mdp2, (0, 1), 2),
       (micro.create_mdp2, (1, 0), 2),
+      (micro.create_mdp2, (1, 1), 2),
+      (micro.create_mdp3, (0, 0, 0), 1),
+      (micro.create_mdp3, (0, 0, 1), 1),
+      (micro.create_mdp3, (0, 1, 0), 1),
+      (micro.create_mdp3, (0, 1, 1), 1),
+      (micro.create_mdp3, (1, 0, 0), 1),
+      (micro.create_mdp3, (1, 0, 1), 1),
+      (micro.create_mdp3, (1, 1, 0), 1),
+      (micro.create_mdp3, (1, 1, 1), 1),
   )
   def test_mdp_extract_markov_chain(self,
                                     mdp_constructor,

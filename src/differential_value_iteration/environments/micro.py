@@ -98,6 +98,26 @@ def create_mdp2(dtype: np.dtype) -> structure.MarkovDecisionProcess:
       name=f'mdp2 ({dtype.__name__})',
   )
 
+def create_mdp3(dtype: np.dtype) -> structure.MarkovDecisionProcess:
+  """Creates a 3-state MDP.
+   Args:
+     dtype: Dtype for reward/transition matrices: np.float32/np.float64
+
+   Returns:
+     The MDP.
+   """
+  return structure.MarkovDecisionProcess(
+      transitions=np.array([
+          [[.5, .25, .25], [.25, .5, .25], [.25, .25, .5]],  # first action
+          [[.25, .5, .25], [.25, .25, .5], [.5, .25, .25]],  # second action
+      ], dtype=dtype),
+      rewards=np.array([
+          [1., 2., 3.],  # first action
+          [0., 0., 0.]  # second action
+      ], dtype=dtype),
+      name=f'mdp2 ({dtype.__name__})',
+  )
+
 
 # Remove these soon.
 mdp1 = create_mdp1(np.float32)

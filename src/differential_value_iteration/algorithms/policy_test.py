@@ -177,8 +177,7 @@ def generate_rewards(environment: structure.MarkovDecisionProcess,
   total_return = 0.
   policy_rewards = environment.rewards[
     policy, np.arange(0, environment.num_states)]
-  policy_transitions = environment.transitions[policy, :,
-                       np.arange(0, environment.num_states)]
+  policy_transitions = environment.transitions[policy, np.arange(0, environment.num_states)]
   state_distribution = initial_state_distribution.copy()
   for _ in range(iterations):
     total_return += np.dot(policy_rewards, state_distribution)

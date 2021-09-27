@@ -105,6 +105,6 @@ class MarkovDecisionProcess:
 
   def as_markov_chain(self, policy: np.ndarray):
     """Returns Markov Chain implied by transition matrix and policy."""
-    state_range = np.arange(0, len(self.transitions))
-    policy_transitions = self.transitions[policy, :, state_range]
+    state_range = np.arange(0, self.num_states)
+    policy_transitions = self.transitions[policy, state_range]
     return quantecon.markov.MarkovChain(policy_transitions)
