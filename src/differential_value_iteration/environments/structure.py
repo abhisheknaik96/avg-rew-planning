@@ -128,7 +128,7 @@ class MarkovDecisionProcess:
     return quantecon.markov.MarkovChain(policy_transitions)
 
   def as_markov_chain(self) -> quantecon.MarkovChain:
-    policy = np.full(shape=self.transitions.shape[:2],  # (A, S)
+    policy = np.full(shape=self.transitions.shape[:2],      # (A, S)
                      fill_value=1 / len(self.transitions),  # (1/num_actions)
                      dtype=self.transitions.dtype)
     return self.as_markov_chain_from_stochastic_policy(policy)
