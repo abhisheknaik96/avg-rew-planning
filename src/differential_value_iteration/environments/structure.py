@@ -1,4 +1,5 @@
 import dataclasses
+from typing import Sequence
 
 import numpy as np
 import quantecon
@@ -103,8 +104,31 @@ class MarkovDecisionProcess:
   def num_actions(self):
     return len(self.transitions)
 
-  def as_markov_chain(self, policy: np.ndarray):
-    """Returns Markov Chain implied by transition matrix and policy."""
+  def as_markov_chain_from_deterministic_policy(self,
+      policy: Sequence[int]) -> quantecon.MarkovChain:
+    """Returns Markov Chain implied by transitions and deterministic policy."""
     state_range = np.arange(0, self.num_states)
     policy_transitions = self.transitions[policy, state_range]
     return quantecon.markov.MarkovChain(policy_transitions)
+
+  def as_markov_chain_from_stochastic_policy(self,
+      policy: np.ndarray) -> quantecon.MarkovChain:
+    """Returns Markov Chain implied by transitions and policy.
+
+    Args:
+      policy: A matrix of shape (A, S) where [:, s] are the action probs in s.
+
+    Returns:
+      A Markov Chain.
+    """
+    if policy.shape != self.transitions.shape[:2]:
+      raise ValueError(
+        f'policy shape:{policy.shape} does not fit transitions:{self.transitions.shape}')
+    policy_transitions = np.einsum('ij,ijk->jk', policy, self.transitions)
+    return quantecon.markov.MarkovChain(policy_transitions)
+
+  def as_markov_chain(self) -> quantecon.MarkovChain:
+    policy = np.full(shape=self.transitions.shape[:2],      # (A, S)
+                     fill_value=1 / len(self.transitions),  # (1/num_actions)
+                     dtype=self.transitions.dtype)
+    return self.as_markov_chain_from_stochastic_policy(policy)
